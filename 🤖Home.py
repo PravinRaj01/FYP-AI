@@ -195,7 +195,7 @@ st.sidebar.markdown("---")
 st.sidebar.markdown("""Developed by: **PRAVIN RAJ A/L MURALITHARAN**""")
 st.sidebar.markdown(
     """
-    [![GitHub](https://img.shields.io/badge/View%20on-GitHub-181717?style=for-the-badge&logo=github)](https://github.com/PravinRaj01/ProductivityManager-JamAI.git)
+    [![GitHub](https://img.shields.io/badge/View%20on-GitHub-181717?style=for-the-badge&logo=github)](https://github.com/PravinRaj01/FYP-AI.git)
     """,
     unsafe_allow_html=True
 )
