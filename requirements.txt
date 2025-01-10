@@ -1,0 +1,9 @@
+transformers==4.37.0
+torch
+streamlit
+firebase-admin
+pyotp
+bitsandbytes
+google-auth
+google-auth-oauthlib
+google-auth-httplib2

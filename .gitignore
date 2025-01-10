@@ -1,0 +1,25 @@
+# Firebase Service Key (DO NOT PUSH)
+firebase/serviceAccountKey.json
+
+
+# Add this to .gitignore
+fine_tuned_bart/
+*.zip
+*.safetensors
+
+# Environment Variables (DO NOT PUSH)
+.env
+venv/
+env/
+
+# Cache Files
+__pycache__/
+*.pyc
+*.pyo
+
+# Streamlit Cache
+.streamlit/
+
+# IDE/Editor Files
+.vscode/
+.idea/
