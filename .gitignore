@@ -1,6 +1,6 @@
 # Firebase Service Key (DO NOT PUSH)
 firebase/serviceAccountKey.json
-
+app3.py
 
 # Add this to .gitignore
 fine_tuned_bart/
