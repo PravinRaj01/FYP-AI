@@ -85,7 +85,7 @@ streamlit run 🤖Home.py
 
 ## 🔥 Technologies Used
 
--**Python 🐍**
+- **Python 🐍**
 - **Streamlit 📊**
 - **Hugging Face Transformers 🤗**
 - **PyTorch 🔥**

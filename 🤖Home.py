@@ -99,7 +99,7 @@ def load_model():
             tokenizer = AutoTokenizer.from_pretrained("./fine_tuned_nanot5_model")
             model = T5ForConditionalGeneration.from_pretrained("./fine_tuned_nanot5_model")
             model.to(device)
-            success_message = "✅ Fine-Tuned Model Loaded Successfully!"
+            success_message = "✅ Fine-Tuned Model is ready for chat!"
         except torch.cuda.CudaError as e:
             device = "cpu"
             tokenizer = AutoTokenizer.from_pretrained('mesolitica/nanot5-small-malaysian-translation-v2')
@@ -140,19 +140,29 @@ def save_translation_to_firestore(input_text, output_text):
         logger.error(f"Error saving translation: {e}")
         return False
 
-# ✅ Main Translation Interface
+# ✅ Main Translation Interface with Refresh Button
 def translator_page():
     model, tokenizer, device, success_message = load_model()
     st.toast(success_message)
 
     st.markdown('<h1 style="color: #65CCB8;">Malaysian Code-Switched Language Translator</h1>', unsafe_allow_html=True)
 
+
     if "user" not in st.session_state or not st.session_state["user"]:
         st.warning("⚠️ You are not logged in! Please log in to save translations.")
 
-    st.markdown('<p style="font-size: 18px; color: #F2F2F2;">🤖 Enter your code-switched text below:</p>', unsafe_allow_html=True)
+    # ✅ Center-Aligned Refresh Button Using Streamlit's Built-in Button
+    col1, col2, col3 = st.columns([4, 4, 1])
+    with col2:
+        if st.button("🔄 Refresh Chat", key="refresh_btn"):
+            st.session_state.conversation = []  # ✅ Clear conversation history
+            st.rerun()
 
-    # ✅ Initialize Conversation History
+    st.markdown('<p style="font-size: 18px; color: #F2F2F2;">🤖 Enter your code-switched text below</p>', unsafe_allow_html=True)
+
+
+    
+    # ✅ Initialize Conversation History if not already present
     if "conversation" not in st.session_state:
         st.session_state.conversation = []
 
@@ -195,6 +205,7 @@ def translator_page():
 
 # ✅ Call the Translator Page
 translator_page()
+
 
 # ✅ Sidebar Footer (Info Section)
 st.sidebar.image("image/logo3.png", use_container_width=True)

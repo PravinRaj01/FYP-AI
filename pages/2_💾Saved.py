@@ -2,8 +2,38 @@ import streamlit as st
 import firebase_admin
 from firebase_admin import firestore
 
-# ✅ Initialize Firestore Client
+# ✅ Ensure Firebase is initialized only once
+if not firebase_admin._apps:
+    from firebase_admin import credentials
+    import os
+    from dotenv import load_dotenv
+    load_dotenv()
+    service_account_path = os.getenv("FIREBASE_KEY_PATH")
+    cred = credentials.Certificate(service_account_path)
+    firebase_admin.initialize_app(cred)
+
 db = firestore.client()
+
+# ✅ Sidebar Logout Button Implementation with Email Display
+def sidebar_with_logout():
+    st.sidebar.image("image/logo3.png", use_container_width=True)
+    
+    # ✅ Display user email and logout button if logged in
+    if "user" in st.session_state and st.session_state["user"]:
+        st.sidebar.markdown(f"**✅ Logged in as:** `{st.session_state['user']}`")
+        if st.sidebar.button("🚪 Logout"):
+            st.session_state["user"] = None
+            st.session_state["account_page"] = "login"
+            st.toast("✅ Successfully logged out!")
+            st.rerun()
+    else:
+        st.sidebar.warning("⚠️ Not logged in!")
+        
+
+# ✅ Apply the sidebar function
+sidebar_with_logout()
+
+
 
 st.title("💾 Saved Translations")
 
@@ -28,8 +58,9 @@ try:
 
     # ✅ Display Translations in a Table with a Delete Button Next to Each Row
     if translations:
-        st.markdown("### Your Saved Translations")
-
+        st.markdown("Looks like someone is logged in😉!")
+        st.markdown("---")
+        
         # Display table with delete buttons next to each row
         for index, translation in enumerate(translations):
             col1, col2, col3, col4 = st.columns([3, 3, 1, 1])

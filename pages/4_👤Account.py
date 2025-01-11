@@ -43,7 +43,7 @@ css_center_profile = """
     </style>
 """
 st.markdown(css_center_profile, unsafe_allow_html=True)
-
+st.sidebar.image("image/logo3.png", use_container_width=True)
 # ✅ Email and Password Validation
 def is_valid_email(email):
     return re.match(r"[^@]+@[^@]+\.[^@]+", email)
@@ -75,6 +75,7 @@ if st.session_state["account_page"] == "login":
                 st.session_state["user"] = email
                 st.success(f"✅ Welcome back, {email}!")
                 st.session_state["account_page"] = "profile"
+                st.toast("⚠️Successfully logged in")
                 st.rerun()
             except Exception as e:
                 st.error("❌ Invalid credentials.")
@@ -141,3 +142,8 @@ elif st.session_state["account_page"] == "profile":
         st.rerun()
 
     st.markdown('</div>', unsafe_allow_html=True)
+
+    # ✅ Sidebar Logout Button Implementation with Email Display
+    st.sidebar.image("image/logo3.png", use_container_width=True)
+    
+
