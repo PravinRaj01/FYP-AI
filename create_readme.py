@@ -1,4 +1,5 @@
-
+# create_readme.py
+readme_content = '''
 # ROJAK | Malaysian Code-Switched Translator 🇲🇾
 
 This project is a **Malaysian Code-Switched Language Translator** powered by **Streamlit** and **T5 Transformers**. It allows users to translate code-switched Malay-English text into proper English using a fine-tuned T5 model.
@@ -50,7 +51,7 @@ cd FYP-AI
 2. **Create a virtual environment (optional but recommended):**
 ```bash
 python -m venv venv
-source venv/bin/activate  # On Windows use: .env\Scriptsctivate
+source venv/bin/activate  # On Windows use: .\venv\Scripts\activate
 
 3. **Install the dependencies:**
 ```bash
@@ -86,4 +87,12 @@ streamlit run 🤖Home.py
 - Firebase Firestore ☁️
 - CUDA (for GPU Acceleration) 🚀
 
+
+'''
+
+# ✅ Writing the README content to a file and confirming success (with UTF-8 encoding)
+with open("README.md", "w", encoding="utf-8") as readme_file:
+    readme_file.write(readme_content)
+
+print("✅ README.md file generated successfully!")
 

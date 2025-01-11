@@ -12,7 +12,6 @@ from dotenv import load_dotenv
 load_dotenv()
 service_account_path = os.getenv("FIREBASE_KEY_PATH")
 
-
 # ✅ Initialize Firebase Admin SDK and Firestore
 if not firebase_admin._apps:
     cred = credentials.Certificate(service_account_path)
@@ -52,20 +51,6 @@ def is_valid_email(email):
 def is_valid_password(password):
     return bool(re.match(r"^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$", password))
 
-# ✅ Persistent Session Check ("Remember Me")
-def check_remember_me():
-    if "remember_me" in st.session_state and st.session_state["remember_me"]:
-        if "user" in st.session_state and st.session_state["user"]:
-            st.session_state["account_page"] = "profile"
-
-# ✅ Password Reset with OTP (Firebase Email Link)
-def send_password_reset_email(email):
-    try:
-        auth.generate_password_reset_link(email)
-        st.success(f"✅ Password reset link sent to: {email}")
-    except Exception as e:
-        st.error(f"❌ Error sending reset email: {e}")
-
 # ✅ Title
 st.title("👤 Account Management")
 
@@ -73,15 +58,11 @@ st.title("👤 Account Management")
 if "account_page" not in st.session_state:
     st.session_state["account_page"] = "login"
 
-# ✅ Check Remember Me
-check_remember_me()
-
 # ✅ LOGIN FORM
 if st.session_state["account_page"] == "login":
     st.subheader("🔐 Login")
     email = st.text_input("Enter your email")
     password = st.text_input("Enter your password", type="password")
-    st.session_state.remember_me = st.checkbox("Remember Me")
 
     if st.button("Login"):
         if not is_valid_email(email):
@@ -97,10 +78,6 @@ if st.session_state["account_page"] == "login":
                 st.rerun()
             except Exception as e:
                 st.error("❌ Invalid credentials.")
-
-    if st.button("Forgot Password?"):
-        st.session_state["account_page"] = "password_reset"
-        st.rerun()
 
     if st.button("Go to Sign Up"):
         st.session_state["account_page"] = "signup"
@@ -125,21 +102,6 @@ elif st.session_state["account_page"] == "signup":
                 st.rerun()
             except Exception as e:
                 st.error(f"❌ Error creating account: {str(e)}")
-
-    if st.button("Back to Login"):
-        st.session_state["account_page"] = "login"
-        st.rerun()
-
-# ✅ PASSWORD RESET FORM (NOW WITH OTP)
-elif st.session_state["account_page"] == "password_reset":
-    st.subheader("🔑 Reset Your Password")
-    reset_email = st.text_input("Enter your registered email")
-
-    if st.button("Send Reset Link"):
-        if is_valid_email(reset_email):
-            send_password_reset_email(reset_email)
-        else:
-            st.error("❌ Please enter a valid email.")
 
     if st.button("Back to Login"):
         st.session_state["account_page"] = "login"
@@ -174,7 +136,6 @@ elif st.session_state["account_page"] == "profile":
     # ✅ Logout Button
     if st.button("Logout"):
         st.session_state["user"] = None
-        st.session_state["remember_me"] = False
         st.session_state["account_page"] = "login"
         st.success("You have been logged out.")
         st.rerun()
