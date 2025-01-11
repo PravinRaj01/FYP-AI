@@ -44,32 +44,36 @@ This project is a **Malaysian Code-Switched Language Translator** powered by **S
 ```bash
 git clone https://github.com/PravinRaj01/FYP-AI.git
 cd FYP-AI
-
+```
 
 
 2. **Create a virtual environment (optional but recommended):**
 ```bash
 python -m venv venv
 source venv/bin/activate  # On Windows use: .env\Scriptsctivate
+```
 
 3. **Install the dependencies:**
 ```bash
 pip install -r requirements.txt
-
+```
 
 4. **Set up Firebase:**
 Add your Firebase service account key to the root directory.
 Create a .env file in the root directory and include the key path:
-plaintext
-Copy code
-FIREBASE_KEY_PATH=serviceAccountKey.json
 
+```plaintext
+FIREBASE_KEY_PATH=serviceAccountKey.json
+```
+
+
+---
 
 ## ▶️ Usage
 1. **Run the Streamlit App:**
 ```bash
 streamlit run 🤖Home.py
-
+```
 
 2. **Functionalities:**
 - Home: Translate code-switched Malay-English text.
@@ -78,12 +82,14 @@ streamlit run 🤖Home.py
 - About: Learn about the project.
 
 
-##🔥 Technologies Used
-- Python 🐍
-- Streamlit 📊
-- Hugging Face Transformers 🤗
-- PyTorch 🔥
-- Firebase Firestore ☁️
-- CUDA (for GPU Acceleration) 🚀
+
+## 🔥 Technologies Used
+
+-**Python 🐍**
+- **Streamlit 📊**
+- **Hugging Face Transformers 🤗**
+- **PyTorch 🔥**
+- **Firebase Firestore ☁️**
+- **CUDA (for GPU Acceleration) 🚀**
 
 

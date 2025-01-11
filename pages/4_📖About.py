@@ -7,13 +7,6 @@ It supports **Malay-English** translations and is part of a research project for
 
 ---
 
-
-# ROJAK | Malaysian Code-Switched Translator 🇲🇾
-
-This project is a **Malaysian Code-Switched Language Translator** powered by **Streamlit** and **T5 Transformers**. It allows users to translate code-switched Malay-English text into proper English using a fine-tuned T5 model.
-
----
-
 ## 🚀 Features
 
 - **Real-Time Translation**: Translates Malaysian code-switched language instantly.
@@ -24,7 +17,7 @@ This project is a **Malaysian Code-Switched Language Translator** powered by **S
 
 ---
 
-##🔥 Technologies Used
+## 🔥 Technologies Used
 - Python 🐍
 - Streamlit 📊
 - Hugging Face Transformers 🤗
