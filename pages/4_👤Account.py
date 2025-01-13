@@ -9,6 +9,7 @@ import os
 from dotenv import load_dotenv
 from firebase_admin import firestore
 from firebase.firebase_config import firebase  # This will ensure Firebase is initialized
+from firebase.firebase_config import firebase  # Ensures Firebase is initialized
 
 # Get Firestore client
 db = firestore.client()
@@ -77,7 +78,7 @@ if st.session_state["account_page"] == "login":
         st.session_state["account_page"] = "password_reset"
         st.rerun()
 
-        
+
     if st.button("Go to Sign Up"):
         st.session_state["account_page"] = "signup"
         st.rerun()
@@ -142,16 +143,21 @@ elif st.session_state["account_page"] == "profile":
     st.markdown('</div>', unsafe_allow_html=True)
 
 
-    # ✅ PASSWORD RESET PAGE
+# ✅ PASSWORD RESET PAGE (with Email Verification)
 elif st.session_state["account_page"] == "password_reset":
     st.subheader("🔑 Password Reset")
     reset_email = st.text_input("Enter your email for password reset")
 
     if st.button("Send Password Reset Email"):
         try:
+            # ✅ Check if the email exists before sending the reset link
+            auth.get_user_by_email(reset_email)
+            # ✅ If it exists, generate a reset link
             link = auth.generate_password_reset_link(reset_email)
             st.success(f"✅ Password reset link sent to: {reset_email}")
             st.info("Check your inbox for the reset link.")
+        except firebase_admin.auth.UserNotFoundError:
+            st.error("❌ This email is not registered. Please try again.")
         except Exception as e:
             st.error(f"❌ Error sending reset email: {str(e)}")
 
