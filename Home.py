@@ -11,6 +11,7 @@ from firebase_admin import firestore, auth
 
 # Get Firestore client
 db = firestore.client()
+
 # ✅ Streamlit Page Configuration
 st.set_page_config(
     page_title="ROJAK | Malaysian Code-Switched Translator",
