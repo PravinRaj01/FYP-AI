@@ -72,7 +72,12 @@ if st.session_state["account_page"] == "login":
                 st.rerun()
             except Exception as e:
                 st.error("❌ Invalid credentials.")
+    # ✅ Password Reset Redirect
+    if st.button("Forgot Password?"):
+        st.session_state["account_page"] = "password_reset"
+        st.rerun()
 
+        
     if st.button("Go to Sign Up"):
         st.session_state["account_page"] = "signup"
         st.rerun()
