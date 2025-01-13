@@ -135,3 +135,21 @@ elif st.session_state["account_page"] == "profile":
         st.rerun()
 
     st.markdown('</div>', unsafe_allow_html=True)
+
+
+    # ✅ PASSWORD RESET PAGE
+elif st.session_state["account_page"] == "password_reset":
+    st.subheader("🔑 Password Reset")
+    reset_email = st.text_input("Enter your email for password reset")
+
+    if st.button("Send Password Reset Email"):
+        try:
+            link = auth.generate_password_reset_link(reset_email)
+            st.success(f"✅ Password reset link sent to: {reset_email}")
+            st.info("Check your inbox for the reset link.")
+        except Exception as e:
+            st.error(f"❌ Error sending reset email: {str(e)}")
+
+    if st.button("Back to Login"):
+        st.session_state["account_page"] = "login"
+        st.rerun()

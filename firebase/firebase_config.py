@@ -1,6 +1,6 @@
 # firebase/firebase_config.py
 import firebase_admin
-from firebase_admin import credentials
+from firebase_admin import credentials, auth
 import streamlit as st
 
 if not firebase_admin._apps:
@@ -22,3 +22,4 @@ if not firebase_admin._apps:
         st.error(f"Error initializing Firebase: {e}")
 
 firebase = firebase_admin
+firebase_auth = auth
