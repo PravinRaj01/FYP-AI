@@ -141,7 +141,7 @@ elif st.session_state["account_page"] == "profile":
         st.success("You have been logged out.")
         st.rerun()
 
-    st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True) 
 
     
     
