@@ -1,0 +1,14 @@
+[run]
+source = Home, tests/integration_tests, tests/unit_tests
+omit = 
+    */tests/conftest.py
+    */testing.py
+    */create_readme.py
+    */fine-tuned translator.py
+    */app3.py
+    */Home.py
+
+[report]
+exclude_lines =
+    pragma: no cover
+    if __name__ == .__main__.:

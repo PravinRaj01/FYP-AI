@@ -7,3 +7,6 @@ bitsandbytes
 google-auth
 google-auth-oauthlib
 google-auth-httplib2
+python-dotenv
+pytest
+pytest-cov

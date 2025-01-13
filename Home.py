@@ -5,6 +5,7 @@ import torch
 import firebase_admin
 from firebase_admin import credentials, firestore
 import os
+import re
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -89,6 +90,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger()
 
+success_message = ""
 # ✅ Load Model and Tokenizer (Cached)
 @st.cache_resource
 def load_model():
@@ -96,23 +98,23 @@ def load_model():
     if device == "cuda":
         try:
             torch.cuda.init()  # Explicit CUDA check
-            tokenizer = AutoTokenizer.from_pretrained("./fine_tuned_nanot5_model")
-            model = T5ForConditionalGeneration.from_pretrained("./fine_tuned_nanot5_model")
+            tokenizer = AutoTokenizer.from_pretrained("./fine_tuned_nanot5")
+            model = T5ForConditionalGeneration.from_pretrained("./fine_tuned_nanot5")
             model.to(device)
-            success_message = "✅ Fine-Tuned Model is ready for chat!"
+            st.session_state["success_message"] = "✅ Fine-tuned model is ready for chat!"
         except torch.cuda.CudaError as e:
             device = "cpu"
             tokenizer = AutoTokenizer.from_pretrained('mesolitica/nanot5-small-malaysian-translation-v2')
             model = T5ForConditionalGeneration.from_pretrained('mesolitica/nanot5-small-malaysian-translation-v2')
             model.to(device)
-            success_message = "⚠️ CUDA initialization error. Loaded base model on CPU."
+            st.session_state["success_message"] = "⚠️ CUDA initialization error. Loaded base model on CPU."
     else:
         tokenizer = AutoTokenizer.from_pretrained('mesolitica/nanot5-small-malaysian-translation-v2')
         model = T5ForConditionalGeneration.from_pretrained('mesolitica/nanot5-small-malaysian-translation-v2')
         model.to(device)
-        success_message = "⚠️ CUDA not available. Loaded base model on CPU."
+        st.session_state["success_message"] = "⚠️ CUDA not available. Loaded base model on CPU."
     
-    return model, tokenizer, device, success_message
+    return model, tokenizer, device
 
 
 # ✅ Cleaning Translation Results
@@ -142,9 +144,7 @@ def save_translation_to_firestore(input_text, output_text):
 
 # ✅ Main Translation Interface with Refresh Button
 def translator_page():
-    model, tokenizer, device, success_message = load_model()
-    st.toast(success_message)
-
+    model, tokenizer, device = load_model()
     st.markdown('<h1 style="color: #65CCB8;">Malaysian Code-Switched Language Translator</h1>', unsafe_allow_html=True)
 
 
@@ -155,7 +155,7 @@ def translator_page():
     col1, col2, col3 = st.columns([4, 4, 1])
     with col2:
         if st.button("🔄 Refresh Chat", key="refresh_btn"):
-            st.session_state.conversation = []  # ✅ Clear conversation history
+            st.session_state.conversation = []  # Clear conversation history
             st.rerun()
 
     st.markdown('<p style="font-size: 18px; color: #F2F2F2;">🤖 Enter your code-switched text below</p>', unsafe_allow_html=True)
@@ -182,30 +182,43 @@ def translator_page():
             return text + '.'
         return text
 
+    # Allow letters, numbers, spaces, and standard punctuation only
+    def ensure_valid_input(text):
+        if not re.match(r'^[a-zA-Z0-9\s.,!?]+$', text):
+            return False
+        return True
+
     if chat_input:
-        chat_input = ensure_punctuation(chat_input)  
+        if not chat_input.strip():
+            st.error("Input cannot be empty. Please enter some text.")
+            return
+        elif not ensure_valid_input(chat_input):
+            st.error("Invalid characters detected! Please enter only letters, numbers, and basic punctuation.")
+        else:
+            chat_input = ensure_punctuation(chat_input)  
+            try:
+                
+                st.session_state.conversation.append({"role": "user", "text": chat_input})
+                prefix = "terjemah ke Inggeris: "
+                input_text_prefixed = prefix + chat_input
+                input_ids = tokenizer(input_text_prefixed, return_tensors="pt").input_ids.to(device)
+                outputs = model.generate(input_ids, max_length=30, num_beams=2)
+                translated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
+                translated_text = clean_translation(translated_text)
+                translated_text = ensure_punctuation(translated_text)
 
-        try:
-            st.session_state.conversation.append({"role": "user", "text": chat_input})
-            prefix = "terjemah ke Inggeris: "
-            input_text_prefixed = prefix + chat_input
-            input_ids = tokenizer(input_text_prefixed, return_tensors="pt").input_ids.to(device)
-            outputs = model.generate(input_ids, max_length=30, num_beams=2)
-            translated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
-            translated_text = clean_translation(translated_text)
+                # ✅ Display and Save Translation
+                st.session_state.conversation.append({"role": "bot", "text": translated_text})
+                save_translation_to_firestore(chat_input, translated_text)
+                st.rerun()
 
-            # ✅ Display and Save Translation
-            st.session_state.conversation.append({"role": "bot", "text": translated_text})
-            save_translation_to_firestore(chat_input, translated_text)
-            st.rerun()
-
-        except Exception as e:
-            st.error(f"Translation error: {str(e)}")
-            logger.error(f"Translation Error: {e}")
+            except Exception as e:
+                st.error(f"Translation error: {str(e)}")
+                logger.error(f"Translation Error: {e}")
 
 # ✅ Call the Translator Page
-translator_page()
 
+translator_page()
 
 # ✅ Sidebar Footer (Info Section)
 st.sidebar.image("image/logo3.png", use_container_width=True)
@@ -216,6 +229,8 @@ st.sidebar.markdown("""
 - **Save Translations**: You must log in to save translations.
 """)
 
+if "success_message" in st.session_state:
+        st.sidebar.success(st.session_state["success_message"])
 st.sidebar.markdown("---")
 st.sidebar.markdown("""Developed by: **PRAVIN RAJ A/L MURALITHARAN**""")
 st.sidebar.markdown(

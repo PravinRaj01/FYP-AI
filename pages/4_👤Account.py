@@ -94,7 +94,7 @@ elif st.session_state["account_page"] == "signup":
         if not is_valid_email(new_email):
             st.error("❌ Invalid email format.")
         elif not is_valid_password(new_password):
-            st.error("❌ Password must meet the criteria!")
+            st.error("❌ Password must be at least 8 characters long, contain one uppercase letter, one number, and one special character.")
         else:
             try:
                 auth.create_user(email=new_email, password=new_password)
@@ -143,7 +143,6 @@ elif st.session_state["account_page"] == "profile":
 
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # ✅ Sidebar Logout Button Implementation with Email Display
-    st.sidebar.image("image/logo3.png", use_container_width=True)
+    
     
 
