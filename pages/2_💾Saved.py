@@ -2,10 +2,11 @@ import streamlit as st
 import firebase_admin
 from firebase_admin import firestore
 
-from firebase.firebase_config import initialize_firebase
+from firebase.firebase_config import db
 
-# ✅ Initialize Firebase (this will handle both Streamlit Cloud and localhost setups)
-initialize_firebase()
+# Example Usage
+users_ref = db.collection("users")
+
 
 db = firestore.client()
 

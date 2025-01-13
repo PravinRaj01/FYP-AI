@@ -30,4 +30,13 @@ def initialize_firebase():
         service_account_path = os.getenv("FIREBASE_KEY_PATH")
         if not service_account_path:
             raise ValueError("FIREBASE_KEY_PATH not set in .env file.")
-        cred = credentials.Certificate(service_account_path
+        cred = credentials.Certificate(service_account_path)
+
+    # Initialize Firebase if not already done
+    if not firebase_admin._apps:
+        firebase_admin.initialize_app(cred)
+
+    return firestore.client()
+
+# ✅ Initialize Firestore globally
+db = initialize_firebase()

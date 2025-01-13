@@ -10,8 +10,10 @@ from dotenv import load_dotenv
 from firebase.firebase_config import initialize_firebase
 from firebase.firebase_config import db
 
-# ✅ Initialize Firebase (this will handle both Streamlit Cloud and localhost setups)
-initialize_firebase()
+# Example Usage
+users_ref = db.collection("users")
+
+
 
 
 # ✅ Centered Profile Styling
