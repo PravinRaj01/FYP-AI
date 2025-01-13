@@ -90,7 +90,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger()
 
-success_message = ""
 # ✅ Load Model and Tokenizer (Cached)
 @st.cache_resource
 def load_model():
