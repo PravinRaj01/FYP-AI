@@ -157,10 +157,14 @@ elif st.session_state["account_page"] == "password_reset":
             st.success(f"✅ Password reset link sent to: {reset_email}")
             st.info("Check your inbox for the reset link.")
         except firebase_admin.auth.UserNotFoundError:
-            st.error("❌ This email is not registered. Please try again.")
+            st.error("❌ This email is not registered. Please Sign Up.")
         except Exception as e:
             st.error(f"❌ Error sending reset email: {str(e)}")
 
     if st.button("Back to Login"):
         st.session_state["account_page"] = "login"
+        st.rerun()
+    
+    if st.button("Go to Sign Up"):
+        st.session_state["account_page"] = "signup"
         st.rerun()
