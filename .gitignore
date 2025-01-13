@@ -17,6 +17,9 @@ _pycache_/
 *.pyc
 *.pyo
 
+# Streamlit Cache
+.streamlit/secrets.toml
+
 # IDE/Editor Files
 .vscode/
 .idea/
