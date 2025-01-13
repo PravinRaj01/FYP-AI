@@ -7,15 +7,14 @@ from google.oauth2 import service_account
 from firebase_admin import credentials
 import os
 from dotenv import load_dotenv
-from firebase.firebase_config import initialize_firebase
-from firebase.firebase_config import db
+from firebase_admin import firestore
+from firebase.firebase_config import firebase_app
 
-# Example Usage
-users_ref = db.collection("users")
+from firebase.firebase_config import firebase
+from firebase_admin import firestore, auth
 
-
-
-
+# Get Firestore client
+db = firestore.client()
 # ✅ Centered Profile Styling
 css_center_profile = """
     <style>
@@ -46,7 +45,7 @@ def is_valid_email(email):
     return re.match(r"[^@]+@[^@]+\.[^@]+", email)
 
 def is_valid_password(password):
-    return bool(re.match(r"^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$", password))
+    return bool(re.match(r"^(?=.[A-Z])(?=.\d)(?=.[@$!%?&])[A-Za-z\d@$!%*?&]{8,}$", password))
 
 # ✅ Title
 st.title("👤 Account Management")
@@ -129,7 +128,7 @@ elif st.session_state["account_page"] == "profile":
     # ✅ Display Total Translations
     translations_ref = db.collection("translations").where("user", "==", user_email).stream()
     translation_count = sum(1 for _ in translations_ref)
-    st.markdown(f"**Total Translations:** `{translation_count}`")
+    st.markdown(f"*Total Translations:* {translation_count}")
 
     # ✅ Logout Button
     if st.button("Logout"):
@@ -138,8 +137,4 @@ elif st.session_state["account_page"] == "profile":
         st.success("You have been logged out.")
         st.rerun()
 
-    st.markdown('</div>', unsafe_allow_html=True) 
-
-    
-    
-
+    st.markdown('</div>', unsafe_allow_html=True)

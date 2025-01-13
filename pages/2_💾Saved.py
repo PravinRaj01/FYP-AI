@@ -1,22 +1,18 @@
 import streamlit as st
 import firebase_admin
 from firebase_admin import firestore
+from firebase.firebase_config import firebase
+from firebase_admin import firestore, auth
 
-from firebase.firebase_config import db
-
-# Example Usage
-users_ref = db.collection("users")
-
-
+# Get Firestore client
 db = firestore.client()
-
 # ✅ Sidebar Logout Button Implementation with Email Display
 def sidebar_with_logout():
     st.sidebar.image("image/logo3.png", use_container_width=True)
     
     # ✅ Display user email and logout button if logged in
     if "user" in st.session_state and st.session_state["user"]:
-        st.sidebar.markdown(f"**✅ Logged in as:** `{st.session_state['user']}`")
+        st.sidebar.markdown(f"*✅ Logged in as:* {st.session_state['user']}")
         if st.sidebar.button("🚪 Logout"):
             st.session_state["user"] = None
             st.session_state["account_page"] = "login"
@@ -62,9 +58,9 @@ try:
             col1, col2, col3, col4 = st.columns([3, 3, 1, 1])
 
             with col1:
-                st.markdown(f"**Input:** {translation['Input Text']}")
+                st.markdown(f"*Input:* {translation['Input Text']}")
             with col2:
-                st.markdown(f"**Output:** {translation['Output Text']}")
+                st.markdown(f"*Output:* {translation['Output Text']}")
             with col3:
                 # ✅ Delete Button (Row-Wise)
                 if st.button(f"❌ Delete", key=f"delete_{translation['id']}"):

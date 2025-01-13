@@ -1,20 +1,16 @@
-
-
 import logging
 import streamlit as st
-
 from transformers import T5ForConditionalGeneration, AutoTokenizer
 import torch
 import firebase_admin
-from firebase_admin import firestore
+from firebase_admin import credentials, firestore
 import os
 import re
-from firebase.firebase_config import initialize_firebase
-from firebase.firebase_config import db
+from firebase.firebase_config import firebase
+from firebase_admin import firestore, auth
 
-# ✅ Initialize Firebase (this will handle both Streamlit Cloud and localhost setups)
-initialize_firebase()
-
+# Get Firestore client
+db = firestore.client()
 # ✅ Streamlit Page Configuration
 st.set_page_config(
     page_title="ROJAK | Malaysian Code-Switched Translator",
@@ -76,6 +72,11 @@ css_dark_mode = """
 </style>
 """
 st.markdown(css_dark_mode, unsafe_allow_html=True)
+
+# ✅ Initialize Firebase Admin SDK and Firestore
+if not firebase_admin._apps:
+    cred = credentials.Certificate(service_account_path)
+    firebase_admin.initialize_app(cred)
 
 db = firestore.client()
 
@@ -222,15 +223,15 @@ translator_page()
 st.sidebar.image("image/logo3.png", use_container_width=True)
 st.sidebar.title("Instructions")
 st.sidebar.markdown("""
-- **Enter Code-Switched Text**: Type your Malay-English code-switched text in the box.
-- **Translation happens automatically.**
-- **Save Translations**: You must log in to save translations.
+- *Enter Code-Switched Text*: Type your Malay-English code-switched text in the box.
+- *Translation happens automatically.*
+- *Save Translations*: You must log in to save translations.
 """)
 
 if "success_message" in st.session_state:
         st.sidebar.success(st.session_state["success_message"])
 st.sidebar.markdown("---")
-st.sidebar.markdown("""Developed by: **PRAVIN RAJ A/L MURALITHARAN**""")
+st.sidebar.markdown("""Developed by: *PRAVIN RAJ A/L MURALITHARAN*""")
 st.sidebar.markdown(
     """
     [![GitHub](https://img.shields.io/badge/View%20on-GitHub-181717?style=for-the-badge&logo=github)](https://github.com/PravinRaj01/FYP-AI.git)
