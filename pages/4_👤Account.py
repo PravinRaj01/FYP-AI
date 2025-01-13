@@ -7,17 +7,12 @@ from google.oauth2 import service_account
 from firebase_admin import credentials
 import os
 from dotenv import load_dotenv
+from firebase.firebase_config import initialize_firebase
+from firebase.firebase_config import db
 
-# Load environment variables
-load_dotenv()
-service_account_path = os.getenv("FIREBASE_KEY_PATH")
+# ✅ Initialize Firebase (this will handle both Streamlit Cloud and localhost setups)
+initialize_firebase()
 
-# ✅ Initialize Firebase Admin SDK and Firestore
-if not firebase_admin._apps:
-    cred = credentials.Certificate(service_account_path)
-    firebase_admin.initialize_app(cred)
-
-db = firestore.client()
 
 # ✅ Centered Profile Styling
 css_center_profile = """

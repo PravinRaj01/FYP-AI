@@ -3,14 +3,14 @@ import streamlit as st
 from transformers import T5ForConditionalGeneration, AutoTokenizer
 import torch
 import firebase_admin
-from firebase_admin import credentials, firestore
+from firebase_admin import firestore
 import os
 import re
-from dotenv import load_dotenv
+from firebase.firebase_config import initialize_firebase
+from firebase.firebase_config import db
 
-# Load environment variables
-load_dotenv()
-service_account_path = os.getenv("FIREBASE_KEY_PATH")
+# ✅ Initialize Firebase (this will handle both Streamlit Cloud and localhost setups)
+initialize_firebase()
 
 # ✅ Streamlit Page Configuration
 st.set_page_config(
@@ -73,11 +73,6 @@ css_dark_mode = """
 </style>
 """
 st.markdown(css_dark_mode, unsafe_allow_html=True)
-
-# ✅ Initialize Firebase Admin SDK and Firestore
-if not firebase_admin._apps:
-    cred = credentials.Certificate(service_account_path)
-    firebase_admin.initialize_app(cred)
 
 db = firestore.client()
 

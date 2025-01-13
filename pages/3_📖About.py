@@ -40,16 +40,10 @@ st.markdown(
 import streamlit as st
 import firebase_admin
 from firebase_admin import firestore
+from firebase.firebase_config import initialize_firebase
 
-# ✅ Ensure Firebase is initialized only once
-if not firebase_admin._apps:
-    from firebase_admin import credentials
-    import os
-    from dotenv import load_dotenv
-    load_dotenv()
-    service_account_path = os.getenv("FIREBASE_KEY_PATH")
-    cred = credentials.Certificate(service_account_path)
-    firebase_admin.initialize_app(cred)
+# ✅ Initialize Firebase (this will handle both Streamlit Cloud and localhost setups)
+initialize_firebase()
 
 db = firestore.client()
 
