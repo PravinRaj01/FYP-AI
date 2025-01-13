@@ -6,8 +6,8 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 import os
 import re
-from firebase.firebase_config import firebase
-from firebase_admin import firestore, auth
+from firebase_admin import firestore
+from firebase.firebase_config import firebase  # This will ensure Firebase is initialized
 
 # Get Firestore client
 db = firestore.client()

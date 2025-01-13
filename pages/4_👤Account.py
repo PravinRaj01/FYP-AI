@@ -8,10 +8,7 @@ from firebase_admin import credentials
 import os
 from dotenv import load_dotenv
 from firebase_admin import firestore
-from firebase.firebase_config import firebase_app
-
-from firebase.firebase_config import firebase
-from firebase_admin import firestore, auth
+from firebase.firebase_config import firebase  # This will ensure Firebase is initialized
 
 # Get Firestore client
 db = firestore.client()
