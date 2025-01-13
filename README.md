@@ -72,7 +72,7 @@ FIREBASE_KEY_PATH=serviceAccountKey.json
 ## ▶️ Usage
 1. **Run the Streamlit App:**
 ```bash
-streamlit run 🤖Home.py
+streamlit run Home.py
 ```
 
 2. **Functionalities:**
