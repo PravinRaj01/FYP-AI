@@ -120,7 +120,7 @@ elif st.session_state["account_page"] == "signup":
                 except:
                     # Create new user if email doesn't exist
                     auth.create_user(email=new_email, password=new_password)
-                    st.success("✅ Account created successfully! Please log in.")
+                    st.toast("✅ Account created successfully! Please log in.")
                     st.session_state["account_page"] = "login"
                     st.rerun()
             except Exception as e:
