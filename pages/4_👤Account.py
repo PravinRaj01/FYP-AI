@@ -89,18 +89,35 @@ elif st.session_state["account_page"] == "signup":
     st.subheader("📝 Create an Account")
     new_email = st.text_input("Enter your email for sign up")
     new_password = st.text_input("Create a password", type="password")
+    
+    # Display password requirements
+    st.info("Password must contain:\n"
+            "- At least 8 characters\n"
+            "- One uppercase letter\n"
+            "- One number\n"
+            "- One special character (@$!%*?&)")
 
     if st.button("Sign Up"):
-        if not is_valid_email(new_email):
+        if not new_email:
+            st.error("❌ Please enter an email.")
+        elif not is_valid_email(new_email):
             st.error("❌ Invalid email format.")
+        elif not new_password:
+            st.error("❌ Please enter a password.")
         elif not is_valid_password(new_password):
-            st.error("❌ Password must be at least 8 characters long, contain one uppercase letter, one number, and one special character.")
+            st.error("❌ Password must meet all requirements.")
         else:
             try:
-                auth.create_user(email=new_email, password=new_password)
-                st.success("✅ Account created successfully! Please log in.")
-                st.session_state["account_page"] = "login"
-                st.rerun()
+                # Check if email already exists
+                try:
+                    existing_user = auth.get_user_by_email(new_email)
+                    st.error("❌ This email is already registered.")
+                except:
+                    # Create new user if email doesn't exist
+                    auth.create_user(email=new_email, password=new_password)
+                    st.success("✅ Account created successfully! Please log in.")
+                    st.session_state["account_page"] = "login"
+                    st.rerun()
             except Exception as e:
                 st.error(f"❌ Error creating account: {str(e)}")
 
