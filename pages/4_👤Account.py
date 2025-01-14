@@ -89,6 +89,7 @@ elif st.session_state["account_page"] == "signup":
     st.subheader("📝 Create an Account")
     new_email = st.text_input("Enter your email for sign up")
     new_password = st.text_input("Create a password", type="password")
+    confirm_password = st.text_input("Confirm password", type="password")
     
     # Display password requirements
     st.info("Password must contain:\n"
@@ -104,6 +105,10 @@ elif st.session_state["account_page"] == "signup":
             st.error("❌ Invalid email format.")
         elif not new_password:
             st.error("❌ Please enter a password.")
+        elif not confirm_password:
+            st.error("❌ Please confirm your password.")
+        elif new_password != confirm_password:
+            st.error("❌ Passwords do not match.")
         elif not is_valid_password(new_password):
             st.error("❌ Password must meet all requirements.")
         else:
