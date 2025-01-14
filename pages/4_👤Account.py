@@ -59,20 +59,21 @@ if st.session_state["account_page"] == "login":
     password = st.text_input("Enter your password", type="password")
 
     if st.button("Login"):
-        if not is_valid_email(email):
-            st.error("❌ Please enter a valid email.")
-        elif not password:
-            st.error("❌ Please enter a password.")
-        else:
-            try:
-                auth.get_user_by_email(email)
-                st.session_state["user"] = email
-                st.success(f"✅ Welcome back, {email}!")
-                st.session_state["account_page"] = "profile"
-                st.toast("⚠️Successfully logged in")
-                st.rerun()
-            except Exception as e:
-                st.error("❌ Invalid credentials.")
+    if not is_valid_email(email):
+        st.error("❌ Please enter a valid email.")
+    elif not password:
+        st.error("❌ Please enter a password.")
+    else:
+        try:
+            # Sign in with email and password
+            user = auth.sign_in_with_email_and_password(email, password)
+            st.session_state["user"] = email
+            st.success(f"✅ Welcome back, {email}!")
+            st.session_state["account_page"] = "profile"
+            st.toast("⚠️Successfully logged in")
+            st.rerun()
+        except:
+            st.error("❌ Invalid email or password.")
     # ✅ Password Reset Redirect
     if st.button("Forgot Password?"):
         st.session_state["account_page"] = "password_reset"
