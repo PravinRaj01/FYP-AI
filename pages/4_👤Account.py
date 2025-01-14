@@ -63,17 +63,17 @@ if st.session_state["account_page"] == "login":
             st.error("❌ Please enter a valid email.")
         elif not password:
             st.error("❌ Please enter a password.")
-    else:
-        try:
-            # Sign in with email and password
-            user = auth.sign_in_with_email_and_password(email, password)
-            st.session_state["user"] = email
-            st.success(f"✅ Welcome back, {email}!")
-            st.session_state["account_page"] = "profile"
-            st.toast("⚠️Successfully logged in")
-            st.rerun()
-        except:
-            st.error("❌ Invalid email or password.")
+        else:
+            try:
+                # Sign in with email and password
+                user = auth.sign_in_with_email_and_password(email, password)
+                st.session_state["user"] = email
+                st.success(f"✅ Welcome back, {email}!")
+                st.session_state["account_page"] = "profile"
+                st.toast("⚠️Successfully logged in")
+                st.rerun()
+            except:
+                st.error("❌ Invalid email or password.")
     # ✅ Password Reset Redirect
     if st.button("Forgot Password?"):
         st.session_state["account_page"] = "password_reset"
