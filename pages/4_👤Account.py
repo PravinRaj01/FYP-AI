@@ -59,10 +59,10 @@ if st.session_state["account_page"] == "login":
     password = st.text_input("Enter your password", type="password")
 
     if st.button("Login"):
-    if not is_valid_email(email):
-        st.error("❌ Please enter a valid email.")
-    elif not password:
-        st.error("❌ Please enter a password.")
+        if not is_valid_email(email):
+            st.error("❌ Please enter a valid email.")
+        elif not password:
+            st.error("❌ Please enter a password.")
     else:
         try:
             # Sign in with email and password
