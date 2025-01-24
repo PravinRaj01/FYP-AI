@@ -33,18 +33,12 @@ if st.session_state["account_page"] == "login":
     password = st.text_input("Enter your password", type="password")
 
     if st.button("Login"):
-        email = st.text_input("Enter your email")  # Define email before use
-        password = st.text_input("Enter your password", type="password")
-
-        if not email:
-            st.error("❌ Please enter an email.")
-        elif not password:
-            st.error("❌ Please enter a password.")
-        else:
+        email = st.text_input("Enter your email")
+        if email:
             try:
-                user = auth.get_user_by_email(email)  # Ensure authentication is correct
-                st.success(f"✅ Welcome back, {email}!")  # ✅ Email is defined before use
+                user = firebase_auth.get_user_by_email(email)  # Use `firebase_auth` instead of `auth`
                 st.session_state["user"] = email
+                st.success(f"✅ Welcome back, {email}!")
                 st.session_state["account_page"] = "profile"
                 st.rerun()
             except firebase_admin.auth.UserNotFoundError:
