@@ -6,10 +6,10 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 import os
 import re
+from firebase.firebase_config import firebase_auth  # Import Firebase Authentication
 from firebase_admin import firestore
-from firebase.firebase_config import firebase  # This will ensure Firebase is initialized
 
-# Get Firestore client
+# ✅ Ensure Firestore client is obtained within the file
 db = firestore.client()
 
 # ✅ Streamlit Page Configuration

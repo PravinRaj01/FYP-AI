@@ -1,50 +1,13 @@
 import streamlit as st
-import firebase_admin
-from firebase_admin import auth, firestore
-import re
-from google.auth.transport.requests import Request
-from google.oauth2 import service_account
-from firebase_admin import credentials
 import os
-from dotenv import load_dotenv
+import re
+from firebase.firebase_config import firebase_auth  # Import Firebase Authentication
 from firebase_admin import firestore
-from firebase.firebase_config import firebase  # This will ensure Firebase is initialized
-from firebase.firebase_config import firebase  # Ensures Firebase is initialized
-from firebase_admin import credentials, firestore
 
-# Get Firestore client
-# ✅ Initialize Firebase Admin SDK and Firestore
-if not firebase_admin._apps:
-    cred = credentials.Certificate(service_account_path)
-    firebase_admin.initialize_app(cred)
+# ✅ Ensure Firestore client is obtained within the file
+db = firestore.client()
 
-db = firestore.client()
-db = firestore.client()
-# ✅ Centered Profile Styling
-css_center_profile = """
-    <style>
-        .profile-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-        .profile-pic {
-            border-radius: 50%;
-            width: 150px;
-            height: 150px;
-            object-fit: cover;
-            border: 4px solid #65CCB8;
-        }
-        .email-link {
-            font-size: 20px;
-            font-weight: bold;
-        }
-    </style>
-"""
-st.markdown(css_center_profile, unsafe_allow_html=True)
-st.sidebar.image("image/logo3.png", use_container_width=True)
+
 # ✅ Email and Password Validation
 def is_valid_email(email):
     return re.match(r"[^@]+@[^@]+\.[^@]+", email)
@@ -72,20 +35,22 @@ if st.session_state["account_page"] == "login":
             st.error("❌ Please enter a password.")
         else:
             try:
-                # Sign in with email and password
-                user = auth.sign_in_with_email_and_password(email, password)
+                # ✅ Sign in using Firebase Authentication
+                user = firebase_auth.get_user_by_email(email)  # Get user details
                 st.session_state["user"] = email
                 st.success(f"✅ Welcome back, {email}!")
                 st.session_state["account_page"] = "profile"
                 st.toast("⚠️Successfully logged in")
                 st.rerun()
-            except:
+            except firebase_admin.auth.UserNotFoundError:
                 st.error("❌ Invalid email or password.")
+            except Exception as e:
+                st.error(f"❌ Authentication error: {e}")
+
     # ✅ Password Reset Redirect
     if st.button("Forgot Password?"):
         st.session_state["account_page"] = "password_reset"
         st.rerun()
-
 
     if st.button("Go to Sign Up"):
         st.session_state["account_page"] = "signup"
@@ -97,7 +62,7 @@ elif st.session_state["account_page"] == "signup":
     new_email = st.text_input("Enter your email for sign up")
     new_password = st.text_input("Create a password", type="password")
     confirm_password = st.text_input("Confirm password", type="password")
-    
+
     # Display password requirements
     st.info("Password must contain:\n"
             "- At least 8 characters\n"
@@ -106,62 +71,49 @@ elif st.session_state["account_page"] == "signup":
             "- One special character (@$!%*?&)")
 
     if st.button("Sign Up"):
-        if not new_email:
-            st.error("❌ Please enter an email.")
-        elif not is_valid_email(new_email):
+        if not is_valid_email(new_email):
             st.error("❌ Invalid email format.")
-        elif not new_password:
-            st.error("❌ Please enter a password.")
-        elif not confirm_password:
-            st.error("❌ Please confirm your password.")
         elif new_password != confirm_password:
             st.error("❌ Passwords do not match.")
         elif not is_valid_password(new_password):
             st.error("❌ Password must meet all requirements.")
         else:
             try:
-                # Check if email already exists
-                try:
-                    existing_user = auth.get_user_by_email(new_email)
-                    st.error("❌ This email is already registered.")
-                except:
-                    # Create new user if email doesn't exist
-                    auth.create_user(email=new_email, password=new_password)
-                    st.toast("✅ Account created successfully! Please log in.")
-                    st.session_state["account_page"] = "login"
-                    st.rerun()
+                # ✅ Create a new user
+                user = firebase_auth.create_user(email=new_email, password=new_password)
+                st.toast("✅ Account created successfully! Please log in.")
+                st.session_state["account_page"] = "login"
+                st.rerun()
             except Exception as e:
-                st.error(f"❌ Error creating account: {str(e)}")
+                st.error(f"❌ Error creating account: {e}")
 
     if st.button("Back to Login"):
         st.session_state["account_page"] = "login"
         st.rerun()
 
-# ✅ PROFILE PAGE (Redirects after Login)
+# ✅ PROFILE PAGE
 elif st.session_state["account_page"] == "profile":
     st.subheader(f"✅ Welcome, {st.session_state['user']}!")
 
-    # ✅ Fetch User Details and Profile Picture
+    # ✅ Fetch user data from Firestore
     user_email = st.session_state["user"]
     user_doc_ref = db.collection("users").document(user_email)
     user_doc = user_doc_ref.get()
 
-    # ✅ Default Profile Picture
     if user_doc.exists:
         user_data = user_doc.to_dict()
         profile_pic_url = user_data.get("profile_pic_url", "https://www.w3schools.com/w3images/avatar2.png")
     else:
         profile_pic_url = "https://www.w3schools.com/w3images/avatar2.png"
 
-    # ✅ Display Profile Section
-    st.markdown('<div class="profile-container">', unsafe_allow_html=True)
-    st.markdown(f'<img src="{profile_pic_url}" class="profile-pic">', unsafe_allow_html=True)
-    st.markdown(f'<p class="email-link">📧 {user_email}</p>', unsafe_allow_html=True)
+    # ✅ Display user profile
+    st.image(profile_pic_url, width=150)
+    st.markdown(f"📧 **Email:** {user_email}")
 
-    # ✅ Display Total Translations
+    # ✅ Fetch and display total translations
     translations_ref = db.collection("translations").where("user", "==", user_email).stream()
     translation_count = sum(1 for _ in translations_ref)
-    st.markdown(f"*Total Translations:* {translation_count}")
+    st.markdown(f"📄 **Total Translations:** {translation_count}")
 
     # ✅ Logout Button
     if st.button("Logout"):
@@ -169,8 +121,6 @@ elif st.session_state["account_page"] == "profile":
         st.session_state["account_page"] = "login"
         st.success("You have been logged out.")
         st.rerun()
-
-    st.markdown('</div>', unsafe_allow_html=True)
 
 
 # ✅ PASSWORD RESET PAGE (with Email Verification)

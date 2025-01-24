@@ -2,11 +2,14 @@ import streamlit as st
 import firebase_admin
 from firebase_admin import firestore
 from firebase_admin import firestore
-from firebase.firebase_config import firebase  # This will ensure Firebase is initialized
+import streamlit as st
+import os
+import re
+from firebase.firebase_config import firebase_auth  # Import Firebase Authentication
+from firebase_admin import firestore
 
-# Get Firestore client
+# ✅ Ensure Firestore client is obtained within the file
 db = firestore.client()
-
 # ✅ Sidebar Logout Button Implementation with Email Display
 def sidebar_with_logout():
     st.sidebar.image("image/logo3.png", use_container_width=True)

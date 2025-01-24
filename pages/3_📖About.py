@@ -1,5 +1,10 @@
 import streamlit as st
+import firebase_admin
+from firebase_admin import firestore
+from firebase_admin import firestore
 
+from firebase.firebase_config import firebase_auth  # Import Firebase Authentication
+from firebase_admin import firestore
 st.title("📖 About This App")
 st.markdown("""
 This application is designed to translate Malaysian code-switched language using a fine-tuned *T5 model*.
@@ -37,13 +42,9 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-import streamlit as st
-import firebase_admin
-from firebase_admin import firestore
-from firebase_admin import firestore
-from firebase.firebase_config import firebase  # This will ensure Firebase is initialized
 
-# Get Firestore client
+
+# ✅ Ensure Firestore client is obtained within the file
 db = firestore.client()
 # ✅ Sidebar Logout Button Implementation with Email Display
 def sidebar_with_logout():
