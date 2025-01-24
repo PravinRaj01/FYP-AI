@@ -33,23 +33,23 @@ if st.session_state["account_page"] == "login":
     password = st.text_input("Enter your password", type="password")
 
     if st.button("Login"):
-        if not is_valid_email(email):
-            st.error("❌ Please enter a valid email.")
+        email = st.text_input("Enter your email")  # Define email before use
+        password = st.text_input("Enter your password", type="password")
+
+        if not email:
+            st.error("❌ Please enter an email.")
         elif not password:
             st.error("❌ Please enter a password.")
         else:
             try:
-                # ✅ Sign in using Firebase Authentication
-                user = firebase_auth.get_user_by_email(email)  # Get user details
+                user = auth.get_user_by_email(email)  # Ensure authentication is correct
+                st.success(f"✅ Welcome back, {email}!")  # ✅ Email is defined before use
                 st.session_state["user"] = email
-                st.success(f"✅ Welcome back, {email}!")
                 st.session_state["account_page"] = "profile"
-                st.toast("⚠️Successfully logged in")
                 st.rerun()
             except firebase_admin.auth.UserNotFoundError:
                 st.error("❌ Invalid email or password.")
-            except Exception as e:
-                st.error(f"❌ Authentication error: {e}")
+
 
     # ✅ Password Reset Redirect
     if st.button("Forgot Password?"):
