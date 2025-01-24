@@ -2,7 +2,7 @@ import streamlit as st
 import os
 import re
 from firebase.firebase_config import firebase_auth  # Import the initialized authentication instance
-
+import firebase_admin
 
 # Ensure Firebase is initialized
 if not firebase_admin._apps:
