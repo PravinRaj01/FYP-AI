@@ -1,12 +1,13 @@
 import streamlit as st
 import os
 import re
-from firebase.firebase_config import firebase_auth  # Import Firebase Authentication
+from firebase.firebase_config import firebase_auth  # Import the initialized authentication instance
 import firebase_admin
 from firebase_admin import auth, firestore, credentials
 
 # Ensure Firebase is initialized
 if not firebase_admin._apps:
+    st.error("Firebase is not initialized. Check configuration.")
     cred = credentials.Certificate("path/to/serviceAccountKey.json")  # Ensure correct path
     firebase_admin.initialize_app(cred)
 
