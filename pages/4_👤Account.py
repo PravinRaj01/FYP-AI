@@ -42,7 +42,7 @@ if st.session_state["account_page"] == "login":
                 st.session_state["account_page"] = "profile"
                 st.toast("⚠️Successfully logged in")
                 st.rerun()
-            except firebase_admin.auth.UserNotFoundError:
+            except firebase_admin._auth_utils.UserNotFoundError:
                 st.error("❌ Invalid email or password.")
             except Exception as e:
                 st.error(f"❌ Authentication error: {e}")
@@ -136,7 +136,7 @@ elif st.session_state["account_page"] == "password_reset":
             link = auth.generate_password_reset_link(reset_email)
             st.success(f"✅ Password reset link sent to: {reset_email}")
             st.info("Check your inbox for the reset link.")
-        except firebase_admin.auth.UserNotFoundError:
+        except firebase_admin._auth_utils.UserNotFoundError:
             st.error("❌ This email is not registered. Please Sign Up.")
         except Exception as e:
             st.error(f"❌ Error sending reset email: {str(e)}")
