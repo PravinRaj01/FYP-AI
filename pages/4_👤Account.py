@@ -1,7 +1,8 @@
 import streamlit as st
 import os
 import re
-from firebase.firebase_config import firebase_auth  # Import the initialized authentication instance
+from firebase.firebase_config import firebase_auth  # Import Firebase Authentication
+import streamlit as st
 import firebase_admin
 from firebase_admin import auth, firestore, credentials
 
@@ -33,17 +34,23 @@ if st.session_state["account_page"] == "login":
     password = st.text_input("Enter your password", type="password")
 
     if st.button("Login"):
-        email = st.text_input("Enter your email")
-        if email:
+        if not is_valid_email(email):
+            st.error("❌ Please enter a valid email.")
+        elif not password:
+            st.error("❌ Please enter a password.")
+        else:
             try:
-                user = firebase_auth.get_user_by_email(email)  # Use `firebase_auth` instead of `auth`
+                # ✅ Sign in using Firebase Authentication
+                user = firebase_auth.get_user_by_email(email)  # Get user details
                 st.session_state["user"] = email
                 st.success(f"✅ Welcome back, {email}!")
                 st.session_state["account_page"] = "profile"
+                st.toast("⚠️Successfully logged in")
                 st.rerun()
             except firebase_admin.auth.UserNotFoundError:
                 st.error("❌ Invalid email or password.")
-
+            except Exception as e:
+                st.error(f"❌ Authentication error: {e}")
 
     # ✅ Password Reset Redirect
     if st.button("Forgot Password?"):
