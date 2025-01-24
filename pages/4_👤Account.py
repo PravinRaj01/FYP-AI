@@ -10,8 +10,15 @@ from dotenv import load_dotenv
 from firebase_admin import firestore
 from firebase.firebase_config import firebase  # This will ensure Firebase is initialized
 from firebase.firebase_config import firebase  # Ensures Firebase is initialized
+from firebase_admin import credentials, firestore
 
 # Get Firestore client
+# ✅ Initialize Firebase Admin SDK and Firestore
+if not firebase_admin._apps:
+    cred = credentials.Certificate(service_account_path)
+    firebase_admin.initialize_app(cred)
+
+db = firestore.client()
 db = firestore.client()
 # ✅ Centered Profile Styling
 css_center_profile = """
